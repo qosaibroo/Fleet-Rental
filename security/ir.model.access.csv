@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fleet_rental_vehicle_user,fleet.rental.vehicle.user,model_fleet_rental_vehicle,base.group_user,1,1,1,0
+access_fleet_rental_vehicle_manager,fleet.rental.vehicle.manager,model_fleet_rental_vehicle,fleet_rental.group_fleet_rental_manager,1,1,1,1
+access_fleet_rental_contract_user,fleet.rental.contract.user,model_fleet_rental_contract,fleet_rental.group_fleet_rental_user,1,1,1,0
+access_fleet_rental_contract_manager,fleet.rental.contract.manager,model_fleet_rental_contract,fleet_rental.group_fleet_rental_manager,1,1,1,1
+access_fleet_availability_report_user,fleet.availability.report.user,model_fleet_availability_report,fleet_rental.group_fleet_rental_user,1,0,0,0
+access_fleet_availability_report_manager,fleet.availability.report.manager,model_fleet_availability_report,fleet_rental.group_fleet_rental_manager,1,0,0,0
+

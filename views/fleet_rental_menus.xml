@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_fleet_rental_root"
+              name="Fleet Rental"
+              sequence="100"
+              web_icon="fleet_rental,static/description/icon.png"/>
+
+    <menuitem id="menu_fleet_rental_vehicles"
+              name="Vehicles"
+              parent="menu_fleet_rental_root"
+              action="action_fleet_rental_vehicle"
+              sequence="10"/>
+
+    <menuitem id="menu_fleet_rental_contracts"
+              name="Contracts"
+              parent="menu_fleet_rental_root"
+              action="action_fleet_rental_contract"
+              sequence="20"/>
+
+
+    <menuitem id="menu_fleet_rental_reporting"
+              name="Reporting"
+              parent="menu_fleet_rental_root"
+              sequence="30"/>
+
+    <menuitem id="menu_fleet_availability_report"
+              name="Fleet Availability Analysis"
+              parent="menu_fleet_rental_reporting"
+              action="action_fleet_availability_sql_report"
+              sequence="10"/>
+
+    <menuitem id="menu_customer_rental_history_report"
+              name="Customer Rental History"
+              parent="menu_fleet_rental_reporting"
+              action="action_customer_rental_history_report"
+              sequence="20"/>
+</odoo>

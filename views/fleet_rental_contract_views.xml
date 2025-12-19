@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Contract list View -->
+    <record id="view_fleet_rental_contract_list" model="ir.ui.view">
+        <field name="name">fleet.rental.contract.list</field>
+        <field name="model">fleet.rental.contract</field>
+        <field name="arch" type="xml">
+            <list string="Contracts" decoration-info="state == 'confirmed'" decoration-success="state == 'invoiced'" decoration-muted="state == 'done'">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="vehicle_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="rent_cost" sum="Total"/>
+                <field name="state" widget="badge"  decoration-info="state == 'confirmed'" decoration-success="state == 'invoiced'" decoration-muted="state == 'done'"/>
+                <field name="payment_state" widget="badge" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fleet_rental_contract_form" model="ir.ui.view">
+        <field name="name">fleet.rental.contract.form</field>
+        <field name="model">fleet.rental.contract</field>
+        <field name="arch" type="xml">
+            <form string="Rental Contract">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_create_invoice" string="Create Invoice" type="object" class="oe_highlight" invisible="state != 'confirmed' or invoice_id" groups="fleet_rental.group_fleet_rental_manager"/>
+                    <button name="action_view_invoice" string="View Invoice" type="object" class="oe_highlight"  groups="fleet_rental.group_fleet_rental_manager" invisible="not invoice_id"/>
+                    <button name="action_done" string="Mark as Done" type="object" invisible="state not in ['confirmed', 'invoiced']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,invoiced,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not invoice_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Invoice</span>
+                                <span class="o_stat_text" invisible="not invoice_id">
+                                    <field name="invoice_id" readonly="1"/>
+                                </span>
+                            </div>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="customer_id" options="{'no_create': False, 'no_create_edit': False}"/>
+                            <field name="vehicle_id" options="{'no_create': False, 'no_create_edit': False}" readonly="state != 'draft'"/>
+                            <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="start_date" readonly="state != 'draft'"/>
+                            <field name="end_date" readonly="state != 'draft'"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <label for="rent_cost"/>
+                                <div name="rent_cost_div" class="o_row">
+                                    <field name="rent_cost"/>
+                                    <field name="currency_id"
+                                           options="{'no_create': True, 'no_open': True}"
+                                           groups="base.group_multi_currency"/>
+                                </div>
+
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="payment_state" widget="badge" invisible="not invoice_id"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_fleet_rental_contract_search" model="ir.ui.view">
+        <field name="name">fleet.rental.contract.search</field>
+        <field name="model">fleet.rental.contract</field>
+        <field name="arch" type="xml">
+            <search string="Contracts">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="vehicle_id"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Invoiced" name="invoiced" domain="[('state', '=', 'invoiced')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="Not Paid" name="not_paid" domain="[('payment_state', '!=', 'paid')]"/>
+                <separator/>
+                <filter string="Today" name="today" domain="[('start_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" domain="[('start_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Vehicle" name="group_vehicle" context="{'group_by': 'vehicle_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_fleet_rental_contract" model="ir.actions.act_window">
+        <field name="name">Rental Contracts</field>
+        <field name="res_model">fleet.rental.contract</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>
